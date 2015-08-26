@@ -91,8 +91,6 @@ public class MainActivity extends ActionBarActivity {
         private ArrayList getMovieObjectsFromJSON(String moviesJsonStr) throws JSONException{
 
             final String TMD_RESULT_ARRAY = "results";
-            final String TMD_TITLE = "title";
-            final String TMD_POSTER = "poster_path";
 
             JSONObject moviesJsonObj = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJsonObj.getJSONArray(TMD_RESULT_ARRAY);
@@ -105,9 +103,8 @@ public class MainActivity extends ActionBarActivity {
                         poster;
 
                 JSONObject movieResult = moviesArray.getJSONObject(i);
-                poster = movieResult.getString(TMD_POSTER);
 
-                resultSet.add(new MovieResult(poster));
+                resultSet.add(new MovieResult(movieResult));
 
 
             }

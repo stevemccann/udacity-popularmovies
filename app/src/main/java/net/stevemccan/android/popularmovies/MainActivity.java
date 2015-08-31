@@ -1,5 +1,6 @@
 package net.stevemccan.android.popularmovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,8 +54,19 @@ public class MainActivity extends ActionBarActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                //Toast.makeText(HelloGridView.this, "" + position,
-                //        Toast.LENGTH_SHORT).show();
+
+                MovieResult result = (MovieResult) parent.getAdapter().getItem(position);
+
+                Intent launchIntent = new Intent(getApplicationContext(), MovieDetailActivity.class);
+
+                launchIntent.putExtra("movie_result", result);
+
+                startActivity(launchIntent);
+
+//                Toast.makeText(getApplicationContext(), result.posterPath,
+//                        Toast.LENGTH_SHORT).show();
+//
+//                Log.v("CLICK DATA: ", result.posterPath);
             }
         });
     }
@@ -98,9 +110,6 @@ public class MainActivity extends ActionBarActivity {
             ArrayList<MovieResult> resultSet = new ArrayList<>();
 
             for (int i = 0; i < moviesArray.length(); i++) {
-
-                String  title,
-                        poster;
 
                 JSONObject movieResult = moviesArray.getJSONObject(i);
 

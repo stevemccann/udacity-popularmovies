@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends ActionBarActivity {
 
     private PosterAdapter mPosterAdapter;
+    String moviesJsonResult = null;
 
 
     @Override
@@ -135,8 +136,6 @@ public class MainActivity extends ActionBarActivity {
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-
-            String moviesJsonResult = null;
 
 
             try {

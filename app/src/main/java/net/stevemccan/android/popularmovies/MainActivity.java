@@ -60,7 +60,7 @@ public class MainActivity extends ActionBarActivity {
         String sortOrderSetting = getSortOrderSetting();
 
         FetchMoviesTask fetchMoviez = new FetchMoviesTask();
-        fetchMoviez.execute();
+        fetchMoviez.execute(sortOrderSetting);
     }
 
     private String getSortOrderSetting() {
@@ -128,13 +128,11 @@ public class MainActivity extends ActionBarActivity {
                 final String API_KEY_PARAM = "api_key";
                 final String SORT_BY_PARAM = "sort_by";
 
-                // TODO: pass these values dynamically
                 ApiStore apiStore = new ApiStore();
                 String apiKey = apiStore.getMOVIE_API_KEY();
-                String sortBy = "popularity.desc";
 
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
-                        .appendQueryParameter(SORT_BY_PARAM, sortBy)
+                        .appendQueryParameter(SORT_BY_PARAM, params[0])
                         .appendQueryParameter(API_KEY_PARAM, apiKey)
                         .build();
 

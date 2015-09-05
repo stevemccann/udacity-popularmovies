@@ -30,55 +30,36 @@ public class MainActivity extends ActionBarActivity {
     private PosterAdapter mPosterAdapter;
     String moviesJsonResult = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-
         ArrayList<MovieResult> movieResults = new ArrayList<>();
-        //movieResults.clear();
-        //movieResults.add(new MovieResult("/tbhdm8UJAb4ViCTsulYFL3lxMCd.jpg"));
-
         mPosterAdapter = new PosterAdapter(
                 this,
                 movieResults
         );
-
+        GridView gridview = (GridView) findViewById(R.id.gridview);
         gridview.setAdapter(mPosterAdapter);
-
-        FetchMoviesTask fetchMoviez = new FetchMoviesTask();
-        fetchMoviez.execute();
-
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-
                 MovieResult result = (MovieResult) parent.getAdapter().getItem(position);
-
                 Intent launchIntent = new Intent(getApplicationContext(), MovieDetailActivity.class);
-
                 launchIntent.putExtra("movie_result", result);
-
                 startActivity(launchIntent);
-
-//                Toast.makeText(getApplicationContext(), result.posterPath,
-//                        Toast.LENGTH_SHORT).show();
-//
-//                Log.v("CLICK DATA: ", result.posterPath);
             }
         });
-    }
 
+        FetchMoviesTask fetchMoviez = new FetchMoviesTask();
+        fetchMoviez.execute();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-
         return true;
     }
 
@@ -95,9 +76,9 @@ public class MainActivity extends ActionBarActivity {
             startActivity(launchIntent);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
 
     private class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<MovieResult>> {
 
@@ -109,21 +90,12 @@ public class MainActivity extends ActionBarActivity {
 
             JSONObject moviesJsonObj = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJsonObj.getJSONArray(TMD_RESULT_ARRAY);
-
             ArrayList<MovieResult> resultSet = new ArrayList<>();
-
             for (int i = 0; i < moviesArray.length(); i++) {
-
                 JSONObject movieResult = moviesArray.getJSONObject(i);
-
                 resultSet.add(new MovieResult(movieResult));
-
-
             }
-
-
             return resultSet;
-
         }
 
         @Override
@@ -131,22 +103,19 @@ public class MainActivity extends ActionBarActivity {
 
             // TODO: return null if params empty
 
-
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-
             try {
-
                 final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
                 final String API_KEY_PARAM = "api_key";
                 final String SORT_BY_PARAM = "sort_by";
 
                 // TODO: pass these values dynamically
                 ApiStore apiStore = new ApiStore();
-                String apiKey = apiStore.getMOVIE_API_KEY(); // Udacity: Add API key in ApiStore.java
+                String apiKey = apiStore.getMOVIE_API_KEY();
                 String sortBy = "popularity.desc";
 
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
@@ -184,10 +153,6 @@ public class MainActivity extends ActionBarActivity {
                     return null;
                 }
                 moviesJsonResult = buffer.toString();
-
-                //Log.v(LOG_TAG, "MoviesJSON string: " + moviesJsonResult);
-
-
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -213,7 +178,6 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
-
             return null;
         }
 
@@ -227,7 +191,6 @@ public class MainActivity extends ActionBarActivity {
                 }
                 // New data is back from the server.  Hooray!
             }
-
         }
     }
 }

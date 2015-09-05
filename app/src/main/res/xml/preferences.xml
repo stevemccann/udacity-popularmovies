@@ -2,10 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:title="Movie Sort Order"
-        android:summary="Sort order of movie list on main page"
-        android:defaultValue="most_popular"
-        android:key="pref_movie_sort_order"
+        android:title="@string/pref_movie_sort_order_label"
+        android:summary="@string/pref_movie_sort_order_summary"
+        android:defaultValue="@string/pref_movie_sort_order_default"
+        android:key="@string/pref_movie_sort_order_key"
         android:entries="@array/pref_movie_sort_labels"
         android:entryValues="@array/pref_movie_sort_values" />
 

@@ -3,4 +3,16 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
+
+    <!-- Label for the movie sort order preference [CHAR LIMIT=30] -->
+    <string name="pref_movie_sort_order_label">Movie Sort Order</string>
+
+    <!-- summmary for the movie sort order preference [CHAR LIMIT=30] -->
+    <string name="pref_movie_sort_order_summary">Sort order of movie list on main page</string>
+
+    <!-- Key name for storing sort order in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_movie_sort_order_key" translatable="false">pref_movie_sort_order_key</string>
+
+    <!-- Default sort order for Movies grid [CHAR LIMIT=NONE] -->
+    <string name="pref_movie_sort_order_default" translatable="false">popularity.desc</string>
 </resources>

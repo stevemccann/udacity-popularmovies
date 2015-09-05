@@ -36,11 +36,28 @@ public class MainActivity extends AppCompatActivity{
 
     private final String MOVIES_JSON_RESULT_KEY = "movies_json_result";
     String moviesJsonResult = null;
+    String lastUsedMovieSortOrder = null;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(MOVIES_JSON_RESULT_KEY, moviesJsonResult);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String sortOrderSetting = getSortOrderSetting();
+
+        // if the current settings for sort order do not match the previous settings,
+        // re-download movie list with the new setting. This will be called when
+        // activity is resuming from the user making changes in the settings.
+        if(!sortOrderSetting.equals(lastUsedMovieSortOrder)) {
+            Log.v(LOG_TAG, "Sort order change detected, fetching new list for setting: " + sortOrderSetting);
+            FetchMoviesTask fetchMoviez = new FetchMoviesTask();
+            fetchMoviez.execute(sortOrderSetting);
+        }
+
     }
 
     @Override
@@ -202,6 +219,8 @@ public class MainActivity extends AppCompatActivity{
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
+                // update the movie order setting used for reference later (ie during on resume)
+                lastUsedMovieSortOrder = params[0];
                 moviesJsonResult = buffer.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);

@@ -1,9 +1,11 @@
 package net.stevemccan.android.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 public class MainActivity extends ActionBarActivity {
 
     static public final String MOVIE_PARCELABLE_KEY = "movie_result";
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private PosterAdapter mPosterAdapter;
     String moviesJsonResult = null;
@@ -54,8 +57,18 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        String sortOrderSetting = getSortOrderSetting();
+
         FetchMoviesTask fetchMoviez = new FetchMoviesTask();
         fetchMoviez.execute();
+    }
+
+    private String getSortOrderSetting() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //SharedPreferences prefs = this.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
+        return prefs.getString(
+                getResources().getString(R.string.pref_movie_sort_order_key),
+                getResources().getString(R.string.pref_movie_sort_order_default));
     }
 
     @Override

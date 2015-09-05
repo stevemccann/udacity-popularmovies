@@ -27,6 +27,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
 
+    static public final String MOVIE_PARCELABLE_KEY = "movie_result";
+
     private PosterAdapter mPosterAdapter;
     String moviesJsonResult = null;
 
@@ -47,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
                                     int position, long id) {
                 MovieResult result = (MovieResult) parent.getAdapter().getItem(position);
                 Intent launchIntent = new Intent(getApplicationContext(), MovieDetailActivity.class);
-                launchIntent.putExtra("movie_result", result);
+                launchIntent.putExtra(MOVIE_PARCELABLE_KEY, result);
                 startActivity(launchIntent);
             }
         });

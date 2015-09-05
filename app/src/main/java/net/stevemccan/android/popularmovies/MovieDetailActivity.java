@@ -17,7 +17,7 @@ public class MovieDetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        MovieResult movie = getIntent().getExtras().getParcelable("movie_result");
+        MovieResult movie = getIntent().getExtras().getParcelable(MainActivity.MOVIE_PARCELABLE_KEY);
 
         ImageView posterImage = (ImageView) findViewById(R.id.detail_movie_poster);
 

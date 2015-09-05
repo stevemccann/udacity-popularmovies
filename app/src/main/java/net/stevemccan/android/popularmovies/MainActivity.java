@@ -33,7 +33,15 @@ public class MainActivity extends ActionBarActivity {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private PosterAdapter mPosterAdapter;
+
+    private final String MOVIES_JSON_RESULT_KEY = "movies_json_result";
     String moviesJsonResult = null;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(MOVIES_JSON_RESULT_KEY, moviesJsonResult);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +67,17 @@ public class MainActivity extends ActionBarActivity {
 
         String sortOrderSetting = getSortOrderSetting();
 
-        FetchMoviesTask fetchMoviez = new FetchMoviesTask();
-        fetchMoviez.execute(sortOrderSetting);
+        if(savedInstanceState != null) {
+            // Load data stored from previous activity and load it to the adapter
+            moviesJsonResult = savedInstanceState.getString(MOVIES_JSON_RESULT_KEY, null);
+            loadMoviesAdapterFromJson(moviesJsonResult);
+        } else {
+            Log.v(LOG_TAG, "fetching new list of movies for sort order: " + sortOrderSetting);
+            FetchMoviesTask fetchMoviez = new FetchMoviesTask();
+            fetchMoviez.execute(sortOrderSetting);
+        }
+
+
     }
 
     private void loadMoviesAdapterFromJson(String moviesJsonResult) {

@@ -63,6 +63,25 @@ public class MainActivity extends ActionBarActivity {
         fetchMoviez.execute(sortOrderSetting);
     }
 
+    private void loadMoviesAdapterFromJson(String moviesJsonResult) {
+
+        ArrayList<MovieResult> movieResults = null;
+        try {
+            movieResults = getMovieObjectsFromJSON(moviesJsonResult);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+
+        if (movieResults != null) {
+            mPosterAdapter.clear();
+            for(MovieResult movie : movieResults) {
+                mPosterAdapter.add(movie);
+            }
+        }
+
+    }
+
     private String getSortOrderSetting() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //SharedPreferences prefs = this.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
@@ -94,27 +113,27 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private ArrayList getMovieObjectsFromJSON(String moviesJsonStr) throws JSONException{
 
-    private class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<MovieResult>> {
+        final String TMD_RESULT_ARRAY = "results";
+
+        JSONObject moviesJsonObj = new JSONObject(moviesJsonStr);
+        JSONArray moviesArray = moviesJsonObj.getJSONArray(TMD_RESULT_ARRAY);
+        ArrayList<MovieResult> resultSet = new ArrayList<>();
+        for (int i = 0; i < moviesArray.length(); i++) {
+            JSONObject movieResult = moviesArray.getJSONObject(i);
+            resultSet.add(new MovieResult(movieResult));
+        }
+        return resultSet;
+    }
+
+
+    private class FetchMoviesTask extends AsyncTask<String, Void, String> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-        private ArrayList getMovieObjectsFromJSON(String moviesJsonStr) throws JSONException{
-
-            final String TMD_RESULT_ARRAY = "results";
-
-            JSONObject moviesJsonObj = new JSONObject(moviesJsonStr);
-            JSONArray moviesArray = moviesJsonObj.getJSONArray(TMD_RESULT_ARRAY);
-            ArrayList<MovieResult> resultSet = new ArrayList<>();
-            for (int i = 0; i < moviesArray.length(); i++) {
-                JSONObject movieResult = moviesArray.getJSONObject(i);
-                resultSet.add(new MovieResult(movieResult));
-            }
-            return resultSet;
-        }
-
         @Override
-        protected ArrayList<MovieResult> doInBackground(String... params) {
+        protected String doInBackground(String... params) {
 
             // TODO: return null if params empty
 
@@ -129,6 +148,7 @@ public class MainActivity extends ActionBarActivity {
                 final String SORT_BY_PARAM = "sort_by";
 
                 ApiStore apiStore = new ApiStore();
+                // TODO: add exception handling message when API is returned blank
                 String apiKey = apiStore.getMOVIE_API_KEY();
 
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
@@ -183,27 +203,13 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
             }
-
-            try {
-                return getMovieObjectsFromJSON(moviesJsonResult);
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
-
-            return null;
+            return moviesJsonResult;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<MovieResult> movieResults) {
+        protected void onPostExecute(String movieResults) {
             super.onPostExecute(movieResults);
-            if (movieResults != null) {
-                mPosterAdapter.clear();
-                for(MovieResult movie : movieResults) {
-                    mPosterAdapter.add(movie);
-                }
-                // New data is back from the server.  Hooray!
-            }
+            loadMoviesAdapterFromJson(movieResults);
         }
     }
 }

@@ -2,7 +2,8 @@
     <string name="app_name">Popular Movies</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_movie_detail">MovieDetailActivity</string>
+    <string name="title_activity_movie_detail">Movie Detail</string>
+    <string name="movie_detail_release_label">Release Date</string>
 
     <!-- Label for the movie sort order preference [CHAR LIMIT=30] -->
     <string name="pref_movie_sort_order_label">Movie Sort Order</string>

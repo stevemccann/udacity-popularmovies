@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -19,17 +20,24 @@ public class MovieDetailActivity extends ActionBarActivity {
 
         MovieResult movie = getIntent().getExtras().getParcelable(MainActivity.MOVIE_PARCELABLE_KEY);
 
+        setTitle(movie.getTitle());
+
         ImageView posterImage = (ImageView) findViewById(R.id.detail_movie_poster);
 
-        String url = "http://image.tmdb.org/t/p/" + "w185" +  movie.posterPath;
+        String url = "http://image.tmdb.org/t/p/" + "w500" +  movie.posterPath;
 
         Picasso.with(getApplicationContext())
                 .load(url)
                 .into(posterImage);
 
+        Float movieRating = (Float.parseFloat(movie.getVoteAvg()) / 2);
+        String releaseDateText =
+                getResources().getString(R.string.movie_detail_release_label) + ": " +
+                        movie.getReleaseDate();
+
         ((TextView) findViewById(R.id.detail_movie_title)).setText(movie.getTitle());
-        ((TextView) findViewById(R.id.detail_movie_rating)).setText(movie.getVoteAvg());
-        ((TextView) findViewById(R.id.detail_movie_release_date)).setText(movie.getReleaseDate());
+        ((RatingBar) findViewById((R.id.detail_movie_ratingBar))).setRating(movieRating);
+        ((TextView) findViewById(R.id.detail_movie_release_date)).setText(releaseDateText);
         ((TextView) findViewById(R.id.detail_movie_overview)).setText(movie.getOverview());
     }
 

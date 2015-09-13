@@ -5,6 +5,10 @@
     <string name="title_activity_movie_detail">Movie Detail</string>
     <string name="movie_detail_release_label">Release Date</string>
 
+    <!-- Messages shown when favourite added or removed on Movie Detail screen -->
+    <string name="favourite_added">Added to favourites!</string>
+    <string name="favourite_removed">Removed from favourites!</string>
+
     <!-- Label for the movie sort order preference [CHAR LIMIT=30] -->
     <string name="pref_movie_sort_order_label">Movie Sort Order</string>
 

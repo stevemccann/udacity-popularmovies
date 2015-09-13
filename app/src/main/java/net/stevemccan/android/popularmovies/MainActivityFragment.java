@@ -1,7 +1,6 @@
 package net.stevemccan.android.popularmovies;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -40,6 +39,34 @@ public class MainActivityFragment extends Fragment {
     private String mLastUsedMovieSortOrder = null;
 
     /**
+     * The fragment's current callback object, which is notified of list item
+     * clicks.
+     */
+    private Callbacks mCallbacks = sDummyCallbacks;
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callbacks {
+        /**
+         * Callback for when an item has been selected.
+         */
+        public void onItemSelected(MovieResult movieResult);
+    }
+
+    /**
+     * A dummy implementation of the {@link Callbacks} interface that does
+     * nothing. Used only when this fragment is not attached to an activity.
+     */
+    private static Callbacks sDummyCallbacks = new Callbacks() {
+        @Override
+        public void onItemSelected(MovieResult movieResult) {
+        }
+    };
+
+    /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
@@ -62,9 +89,7 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 MovieResult result = (MovieResult) parent.getAdapter().getItem(position);
-                Intent launchIntent = new Intent(getActivity(), MovieDetailActivity.class);
-                launchIntent.putExtra(MovieResult.MOVIE_PARCELABLE_KEY, result);
-                startActivity(launchIntent);
+                ((Callbacks) getActivity()).onItemSelected(result);
             }
         });
 

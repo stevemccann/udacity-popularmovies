@@ -17,6 +17,8 @@ import com.squareup.picasso.Picasso;
  */
 public class MovieDetailFragment extends Fragment {
 
+    private MovieResult mMovieResult;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -30,27 +32,36 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
-        MovieResult movie = getActivity().getIntent().getExtras().getParcelable(MovieResult.MOVIE_PARCELABLE_KEY);
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mMovieResult = arguments.getParcelable(MovieResult.MOVIE_PARCELABLE_KEY);
+        } else {
+            // else pull data from Intent (when launched on a phone
+            // TODO: Find a way to get intent data from getArguments
+            mMovieResult = getActivity().getIntent().getExtras().getParcelable(MovieResult.MOVIE_PARCELABLE_KEY);
+        }
 
-        getActivity().setTitle(movie.getTitle());
+        getActivity().setTitle(mMovieResult.getTitle());
 
+        // TODO: check if these vars should be detached when the fragment is disconnected,
+        // to prevent memory leaks
         ImageView posterImage = (ImageView) rootView.findViewById(R.id.detail_movie_poster);
 
-        String url = "http://image.tmdb.org/t/p/" + "w500" +  movie.posterPath;
+        String url = "http://image.tmdb.org/t/p/" + "w500" +  mMovieResult.posterPath;
 
         Picasso.with(getActivity())
                 .load(url)
                 .into(posterImage);
 
-        Float movieRating = (Float.parseFloat(movie.getVoteAvg()) / 2);
+        Float movieRating = (Float.parseFloat(mMovieResult.getVoteAvg()) / 2);
         String releaseDateText =
                 getResources().getString(R.string.movie_detail_release_label) + ": " +
-                        movie.getReleaseDate();
+                        mMovieResult.getReleaseDate();
 
-        ((TextView) rootView.findViewById(R.id.detail_movie_title)).setText(movie.getTitle());
+        ((TextView) rootView.findViewById(R.id.detail_movie_title)).setText(mMovieResult.getTitle());
         ((RatingBar) rootView.findViewById((R.id.detail_movie_ratingBar))).setRating(movieRating);
         ((TextView) rootView.findViewById(R.id.detail_movie_release_date)).setText(releaseDateText);
-        ((TextView) rootView.findViewById(R.id.detail_movie_overview)).setText(movie.getOverview());
+        ((TextView) rootView.findViewById(R.id.detail_movie_overview)).setText(mMovieResult.getOverview());
 
         return rootView;
     }

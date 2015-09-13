@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity{
 
     static public final String MOVIES_JSON_RESULT_KEY = "movies_json_result";
 
+    // Declaring PosterAdapter outside so that it can be updated from ASyncTask
     private PosterAdapter mPosterAdapter;
+
     private String mMoviesJsonResult = null;
     private String mLastUsedMovieSortOrder = null;
 

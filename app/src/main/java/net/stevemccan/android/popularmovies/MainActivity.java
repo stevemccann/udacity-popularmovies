@@ -29,19 +29,18 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
-    static public final String MOVIE_PARCELABLE_KEY = "movie_result";
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private PosterAdapter mPosterAdapter;
+    static public final String MOVIES_JSON_RESULT_KEY = "movies_json_result";
 
-    private final String MOVIES_JSON_RESULT_KEY = "movies_json_result";
-    String moviesJsonResult = null;
-    String lastUsedMovieSortOrder = null;
+    private PosterAdapter mPosterAdapter;
+    private String mMoviesJsonResult = null;
+    private String mLastUsedMovieSortOrder = null;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(MOVIES_JSON_RESULT_KEY, moviesJsonResult);
+        outState.putString(MOVIES_JSON_RESULT_KEY, mMoviesJsonResult);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity{
         // if the current settings for sort order do not match the previous settings,
         // re-download movie list with the new setting. This will be called when
         // activity is resuming from the user making changes in the settings.
-        if(!sortOrderSetting.equals(lastUsedMovieSortOrder)) {
+        if(!sortOrderSetting.equals(mLastUsedMovieSortOrder)) {
             Log.v(LOG_TAG, "Sort order change detected, fetching new list for setting: " + sortOrderSetting);
             FetchMoviesTask fetchMoviez = new FetchMoviesTask();
             fetchMoviez.execute(sortOrderSetting);
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity{
                                     int position, long id) {
                 MovieResult result = (MovieResult) parent.getAdapter().getItem(position);
                 Intent launchIntent = new Intent(getApplicationContext(), MovieDetailActivity.class);
-                launchIntent.putExtra(MOVIE_PARCELABLE_KEY, result);
+                launchIntent.putExtra(MovieResult.MOVIE_PARCELABLE_KEY, result);
                 startActivity(launchIntent);
             }
         });
@@ -86,8 +85,8 @@ public class MainActivity extends AppCompatActivity{
 
         if(savedInstanceState != null) {
             // Load data stored from previous activity and load it to the adapter
-            moviesJsonResult = savedInstanceState.getString(MOVIES_JSON_RESULT_KEY, null);
-            loadMoviesAdapterFromJson(moviesJsonResult);
+            mMoviesJsonResult = savedInstanceState.getString(MOVIES_JSON_RESULT_KEY, null);
+            loadMoviesAdapterFromJson(mMoviesJsonResult);
         } else {
             Log.v(LOG_TAG, "fetching new list of movies for sort order: " + sortOrderSetting);
             FetchMoviesTask fetchMoviez = new FetchMoviesTask();
@@ -220,8 +219,8 @@ public class MainActivity extends AppCompatActivity{
                     return null;
                 }
                 // update the movie order setting used for reference later (ie during on resume)
-                lastUsedMovieSortOrder = params[0];
-                moviesJsonResult = buffer.toString();
+                mLastUsedMovieSortOrder = params[0];
+                mMoviesJsonResult = buffer.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -239,7 +238,7 @@ public class MainActivity extends AppCompatActivity{
                     }
                 }
             }
-            return moviesJsonResult;
+            return mMoviesJsonResult;
         }
 
         @Override

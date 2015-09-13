@@ -10,7 +10,10 @@ import org.json.JSONObject;
  * Created by Steven on 2015-08-23.
  */
 public class MovieResult implements Parcelable{
-    
+
+    // key used to parcel and unparcel movie result object through intents
+    static public final String MOVIE_PARCELABLE_KEY = "movie_result";
+
     // Set this number to size of variables so parcelable array is proper size
     private final int PARCELABLE_ARRAY_SIZE = 6;
 

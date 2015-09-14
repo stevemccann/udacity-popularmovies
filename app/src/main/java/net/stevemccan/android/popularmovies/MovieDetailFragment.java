@@ -47,6 +47,9 @@ public class MovieDetailFragment extends Fragment {
     private String mReviewsJsonResult;
     private LinearLayout mReviewsLinearLayoutContainer;
 
+    private final String RESTORE_TRAILER_JSON_RESULTS = "trailer_json";
+    private final String RESTORE_REVIEWS_JSON_RESULTS = "reviews_json";
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -118,15 +121,31 @@ public class MovieDetailFragment extends Fragment {
         // Start an AsyncTask to fetch and load the trailers for the movie being viewed
         mTrailersLinerLayoutContainer =
                 (LinearLayout) rootView.findViewById(R.id.movie_detail_trailers);
-        FetchTrailersTask fetchTrailersTask = new FetchTrailersTask();
-        fetchTrailersTask.execute(mMovieResult.getMovieId());
-
         mReviewsLinearLayoutContainer =
                 (LinearLayout) rootView.findViewById(R.id.movie_detail_reviews);
-        FetchReviewsTask fetchReviewsTask = new FetchReviewsTask();
-        fetchReviewsTask.execute(mMovieResult.getMovieId());
 
+        if (savedInstanceState != null) {
+            Log.v(LOG_TAG, "Restoring trailer and review data...");
+            mMovieTrailerJsonResults = savedInstanceState.getString(RESTORE_TRAILER_JSON_RESULTS, null);
+            loadMovieTrailersFromJson(mMovieTrailerJsonResults);
+            mReviewsJsonResult = savedInstanceState.getString(RESTORE_REVIEWS_JSON_RESULTS, null);
+            loadReviewsFromJson(mReviewsJsonResult);
+        } else {
+            Log.v(LOG_TAG, "Fetching trailer and review data...");
+            FetchTrailersTask fetchTrailersTask = new FetchTrailersTask();
+            fetchTrailersTask.execute(mMovieResult.getMovieId());
+
+            FetchReviewsTask fetchReviewsTask = new FetchReviewsTask();
+            fetchReviewsTask.execute(mMovieResult.getMovieId());
+        }
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(RESTORE_TRAILER_JSON_RESULTS, mMovieTrailerJsonResults);
+        outState.putString(RESTORE_REVIEWS_JSON_RESULTS, mReviewsJsonResult);
     }
 
     private class FetchTrailersTask extends AsyncTask<String, Void, String> {

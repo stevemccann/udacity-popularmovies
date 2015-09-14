@@ -122,9 +122,22 @@ public class MainActivityFragment extends Fragment {
         // re-download movie list with the new setting. This will be called when
         // activity is resuming from the user making changes in the settings.
         if(!sortOrderSetting.equals(mLastUsedMovieSortOrder)) {
-            Log.v(LOG_TAG, "Sort order change detected, fetching new list for setting: " + sortOrderSetting);
-            FetchMoviesTask fetchMoviez = new FetchMoviesTask();
-            fetchMoviez.execute(sortOrderSetting);
+            // TODO: reference the favourite string from a resource
+            if(sortOrderSetting.equals("favourite")){
+                FavouriteMovieStore favouriteMovieStore = new FavouriteMovieStore();
+                ArrayList<MovieResult> movies = favouriteMovieStore.loadFavorites(getActivity());
+                if (movies != null) {
+                    mPosterAdapter.clear();
+                    for(MovieResult movie : movies) {
+                        mPosterAdapter.add(movie);
+                    }
+                }
+                Log.v(LOG_TAG, "favourite item selected");
+            } else {
+                Log.v(LOG_TAG, "Sort order change detected, fetching new list for setting: " + sortOrderSetting);
+                FetchMoviesTask fetchMoviez = new FetchMoviesTask();
+                fetchMoviez.execute(sortOrderSetting);
+            }
         }
 
     }

@@ -92,7 +92,10 @@ public class MovieDetailFragment extends Fragment {
         ((TextView) rootView.findViewById(R.id.detail_movie_release_date)).setText(releaseDateText);
         ((TextView) rootView.findViewById(R.id.detail_movie_overview)).setText(mMovieResult.getOverview());
 
+        final FavouriteMovieStore favouriteMovieStore = new FavouriteMovieStore();
+
         mStarFavourite = (CheckBox) rootView.findViewById(R.id.star);
+        //mStarFavourite.setChecked(mMovieResult.);
         mStarFavourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -103,8 +106,10 @@ public class MovieDetailFragment extends Fragment {
                 CharSequence text = null;
                 if (isChecked) {
                     text = getResources().getString(R.string.favourite_added).toString();
+                    favouriteMovieStore.addFavorite(getActivity(), mMovieResult);
                 } else {
                     text = getResources().getString(R.string.favourite_removed).toString();
+                    favouriteMovieStore.removeFavorite(getActivity(), mMovieResult);
                 }
                 int duration = Toast.LENGTH_SHORT;
                 mStartFavouriteToast = Toast.makeText(context, text, duration);

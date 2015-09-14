@@ -15,7 +15,7 @@ public class MovieResult implements Parcelable{
     static public final String MOVIE_PARCELABLE_KEY = "movie_result";
 
     // Set this number to size of variables so parcelable array is proper size
-    private final int PARCELABLE_ARRAY_SIZE = 6;
+    private final int PARCELABLE_ARRAY_SIZE = 7;
 
     final String TMD_POSTER = "poster_path";
     final String TMD_TITLE = "title";
@@ -23,6 +23,7 @@ public class MovieResult implements Parcelable{
     final String TMD_BACKDROP = "backdrop_path";
     final String TMD_VOTE_AVG = "vote_average";
     final String TMD_RELEASE_DATE = "release_date";
+    final String TMD_MOVIE_ID = "id";
 
     public String posterPath;
     private String title;
@@ -30,6 +31,7 @@ public class MovieResult implements Parcelable{
     private String backdrop;
     private String voteAvg;
     private String releaseDate;
+    private String movieId;
 
     public MovieResult (JSONObject movie) throws JSONException {
         this.posterPath = movie.getString(TMD_POSTER);
@@ -38,7 +40,7 @@ public class MovieResult implements Parcelable{
         this.backdrop = movie.getString(TMD_BACKDROP);
         this.voteAvg = movie.getString(TMD_VOTE_AVG);
         this.releaseDate = movie.getString(TMD_RELEASE_DATE);
-        
+        this.movieId = movie.getString(TMD_MOVIE_ID);
     }
 
     // Getters
@@ -66,6 +68,10 @@ public class MovieResult implements Parcelable{
         return releaseDate;
     }
 
+    public String getMovieId() {
+        return movieId;
+    }
+
     // Create object from incoming Parcel
     public MovieResult(Parcel in) {
         String[] data = new String[PARCELABLE_ARRAY_SIZE];
@@ -79,6 +85,7 @@ public class MovieResult implements Parcelable{
         this.backdrop = data[3];
         this.voteAvg = data[4];
         this.releaseDate = data[5];
+        this.movieId = data[6];
     }
 
     @Override
@@ -94,7 +101,8 @@ public class MovieResult implements Parcelable{
                 this.overview,
                 this.backdrop,
                 this.voteAvg,
-                this.releaseDate
+                this.releaseDate,
+                this.movieId
         });
     }
 

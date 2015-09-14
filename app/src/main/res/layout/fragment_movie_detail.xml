@@ -16,7 +16,7 @@
             android:text="Movie Title Text"
             android:id="@+id/detail_movie_title"
             android:gravity="center"
-            android:textSize="20sp"
+            android:textSize="26dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp" />
 
@@ -44,23 +44,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="release date"
+                    android:textSize="25dp"
                     android:id="@+id/detail_movie_release_date"
                     android:layout_gravity="center_horizontal" />
 
-                <RatingBar
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/detail_movie_ratingBar"
-                    android:layout_below="@+id/detail_movie_title"
-                    android:scaleX=".5"
-                    android:scaleY=".5"
-                    android:layout_gravity="center_horizontal"
-                    android:numStars="5" />
+                    android:text="rating"
+                    android:textSize="12dp"
+                    android:textStyle="italic"
+                    android:id="@+id/detail_movie_rating"
+                    android:layout_gravity="center_horizontal" />
 
                 <CheckBox android:id="@+id/star"
                     style="?android:attr/starStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     />
             </LinearLayout>
         </LinearLayout>
@@ -79,6 +80,9 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Trailers"
+            android:textSize="23dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="10dp"
             android:id="@+id/movie_detail_trailers_title" />
         <LinearLayout
             android:orientation="vertical"
@@ -92,6 +96,9 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Reviews"
+            android:textSize="23dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="10dp"
             android:id="@+id/movie_detail_reviews_title" />
         <LinearLayout
             android:orientation="vertical"

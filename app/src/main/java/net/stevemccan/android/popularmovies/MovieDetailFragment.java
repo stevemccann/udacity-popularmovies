@@ -16,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,13 +81,12 @@ public class MovieDetailFragment extends Fragment {
                 .load(url)
                 .into(posterImage);
 
-        Float movieRating = (Float.parseFloat(mMovieResult.getVoteAvg()) / 2);
-        String releaseDateText =
-                getResources().getString(R.string.movie_detail_release_label) + ": " +
-                        mMovieResult.getReleaseDate();
+        String movieRating = mMovieResult.getVoteAvg() + "/10";
+        String releaseDateText = mMovieResult.getReleaseDate().substring(0,4);
 
         ((TextView) rootView.findViewById(R.id.detail_movie_title)).setText(mMovieResult.getTitle());
-        ((RatingBar) rootView.findViewById((R.id.detail_movie_ratingBar))).setRating(movieRating);
+        //((RatingBar) rootView.findViewById((R.id.detail_movie_ratingBar))).setRating(movieRating);
+        ((TextView) rootView.findViewById(R.id.detail_movie_rating)).setText(movieRating);
         ((TextView) rootView.findViewById(R.id.detail_movie_release_date)).setText(releaseDateText);
         ((TextView) rootView.findViewById(R.id.detail_movie_overview)).setText(mMovieResult.getOverview());
 
@@ -226,6 +224,7 @@ public class MovieDetailFragment extends Fragment {
 
                 TextView trailerNameTv = new TextView(getActivity());
                 trailerNameTv.setText(trailerResult.getString("name"));
+                trailerNameTv.setMinHeight(18);
 
                 final String youTubeVideoId = trailerResult.getString("key");
 

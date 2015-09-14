@@ -45,6 +45,8 @@ public class MovieDetailFragment extends Fragment {
     private Toast mStartFavouriteToast;
     private String mMovieTrailerJsonResults;
     private LinearLayout mTrailersLinerLayoutContainer;
+    private String mReviewsJsonResult;
+    private LinearLayout mReviewsLinearLayoutContainer;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -115,6 +117,11 @@ public class MovieDetailFragment extends Fragment {
                 (LinearLayout) rootView.findViewById(R.id.movie_detail_trailers);
         FetchTrailersTask fetchTrailersTask = new FetchTrailersTask();
         fetchTrailersTask.execute(mMovieResult.getMovieId());
+
+        mReviewsLinearLayoutContainer =
+                (LinearLayout) rootView.findViewById(R.id.movie_detail_reviews);
+        FetchReviewsTask fetchReviewsTask = new FetchReviewsTask();
+        fetchReviewsTask.execute(mMovieResult.getMovieId());
 
         return rootView;
     }
@@ -243,15 +250,110 @@ public class MovieDetailFragment extends Fragment {
         return null;
     }
 
-    private class FetchReviewsTask extends  AsyncTask<Void, Void, Void> {
+    private class FetchReviewsTask extends  AsyncTask<String, Void, String> {
+
         @Override
-        protected Void doInBackground(Void... params) {
-            return null;
+        protected String doInBackground(String... params) {
+
+            // TODO: return null if params empty
+
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            try {
+                // TODO: Make these variables global (some are also used in main activity fragment)
+                final String TMD_BASE_URL = "http://api.themoviedb.org/3/movie/";
+                final String REVIEWS_PATH = "reviews";
+                final String API_KEY_PARAM = "api_key";
+
+                ApiStore apiStore = new ApiStore();
+                String apiKey = apiStore.getMOVIE_API_KEY();
+
+                // TODO: build this URL dynamically
+                final String FETCH_URL = TMD_BASE_URL + params[0] + "/" + REVIEWS_PATH + "?" +
+                        API_KEY_PARAM + "=" + apiKey;
+
+                Uri builtUri = Uri.parse(FETCH_URL);
+                URL url = new URL(builtUri.toString());
+
+                // Create the request to TheMovieDB, and open the connection
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                // Read the input stream into a String
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                    // But it does make debugging a *lot* easier if you print out the completed
+                    // buffer for debugging.
+                    buffer.append(line + "\n");
+                }
+                if (buffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    return null;
+                }
+                mReviewsJsonResult = buffer.toString();
+
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Error ", e);
+                // If the code didn't successfully get the weather data, there's no point in attemping
+                // to parse it.
+                return null;
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e(LOG_TAG, "Error closing stream", e);
+                    }
+                }
+            }
+            return mReviewsJsonResult;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(String reviewsJsonResults) {
+            // load results into view
+            super.onPostExecute(reviewsJsonResults);
+            loadReviewsFromJson(reviewsJsonResults);
         }
+    }
+
+    private Void loadReviewsFromJson(String jsonResults) {
+        try {
+            // get the reviews from the list
+            JSONObject reviewsJsonObj = new JSONObject(jsonResults);
+            JSONArray reviewsJsonArray = reviewsJsonObj.getJSONArray("results");
+
+            for (int i = 0; i < reviewsJsonArray.length(); i++) {
+                //build a View with the JSON data...
+                JSONObject reviewResult = reviewsJsonArray.getJSONObject(i);
+
+                TextView reviewTv = new TextView(getActivity());
+                reviewTv.setText(
+                        reviewResult.getString("author") + ": \n" +
+                                reviewResult.getString("content") + "\n\n"
+                );
+                mReviewsLinearLayoutContainer.addView(reviewTv);
+            }
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return null;
     }
 }
